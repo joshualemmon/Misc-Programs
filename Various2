@@ -1,0 +1,33 @@
+// Lab02 
+// Name: Joshua Lemmon
+// Date: Sept 24, 2014
+// Desc: Laboratory 2 - Temperature Conversion
+#include"stdafx.h"
+#include<iostream>
+
+using namespace std;
+
+int main() {
+	//part 1
+	double celsius; //setting a variable for celsius
+	cout << "Enter temperature in celsius: "; //prompt for input
+	cin >> celsius; //assigns input to celsius
+	double farenheit = (9 / 5)*celsius + 32; //defining a function to get the value of farenheit 
+	cout << "Temperature in farenheit: " << farenheit << endl;// outputting conversion result
+
+	//part 2
+
+	double principalAmount;// declaring variable for initial amount of money
+	cout << "Enter principal amount: $"; //prompt for input
+	cin >> principalAmount; //assigns input to principalAmount
+	double interestRate;//declaring variable for interest rate
+	cout << "Enter interest rate as a decimal: "; //prompt for interest rate
+	cin >> interestRate;// assigns input ot interest rate
+	interestRate += 1; //converting to make it easier to multiply with
+	for (int i = 0; i < 5; i++){
+		principalAmount *= interestRate;// calculates final amount after 5 years
+	}
+	cout << "Amount after 5 years: $";//
+	printf("%.2lf", principalAmount);//outputs final amount and rounds to 2 decimal points
+	return 0;
+}
