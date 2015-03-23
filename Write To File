@@ -1,0 +1,49 @@
+//Joshua Lemmon 100555320
+//Midterm 1 Question 5
+//This program takes an inputted string, and passes it by reference to a function that will print the string to
+//a text file. Then a message will be displayed depending on if file write was successful or not
+
+#include <string>
+#include <iostream>
+#include <fstream>
+using namespace std;
+
+//definging the writeString function
+bool writeString(string& s);
+
+int main()
+{
+	string input;
+	bool written;
+	//prompt for string
+	cout << "Enter a string to write to the file: ";
+	cin >> input;
+	//calling function to write string to file
+	written = writeString(input);
+	//outputs message depending on if file was written successfully
+	if (written)
+	{
+		cout << "File succesfully written." << endl;
+	}
+	else
+	{
+		cout << "File not written." << endl;
+	}
+	return 0;
+}
+
+//this function takes a string by reference and writes it to a file
+bool writeString(string& s)
+{
+	ofstream myFile("user.txt");
+	if (myFile.is_open())
+	{
+		myFile << s << endl;
+		myFile.close();
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
