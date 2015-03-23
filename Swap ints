@@ -1,0 +1,17 @@
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	int x = 20;
+	int y = 50;
+
+	cout << "x = " << x << "  y = " << y << endl;
+	cout << "swapping..." << endl;
+
+	x += y;
+	y = x - y;
+	x -= y;
+
+	cout << "x = " << x << "  y = " << y;
+}
