@@ -1,0 +1,46 @@
+using namespace std;
+#include <vector>
+#include <iostream>
+
+bool isRepeated(char x[], int arraySize, int position)//this function checks if a character is repeated
+{
+	char n = x[position];//getting initial character for current position
+	for (unsigned int i = 0; i < arraySize; i++)
+	{
+		if (i != position && x[i] == n)// if the original char is the same as another character in the array function will return true
+		{
+			return true;
+		}
+	}
+	return false;// if the character isnt repeated the function returns false
+}
+
+int main()
+{
+	char charArray[] = { 'a', 'b', 'd', 'r', 'f', 'g', 'f', 'r', 'd', 'a', 'g'};//edit for general input later
+	int arraySize = sizeof(charArray);//getting size of array 
+	vector<char> uniqueChars;//creating a vector to hold unique characters
+	bool repeated;//creating a boolean variable to hold the return value 
+	int position = 0;//sets initial position in the array to 0
+
+	for (unsigned int i = 0; i < arraySize; i++)//loops through the array
+	{
+		repeated = isRepeated(charArray, arraySize, position);//calls function
+		if (repeated == false)//if the function returns a false value then the character is unique
+		{
+			uniqueChars.push_back(charArray[position]);
+		}
+		position++;//increases position
+	}
+	if (uniqueChars.size()>0)//if there are unique characters
+	{
+		for (unsigned int i = 0; i < uniqueChars.size(); i++)//outputs all unique characters
+		{
+			cout << uniqueChars[i] << " ";
+		}
+	}
+	else//if no unique characters
+	{
+		cout << "no instance found" << endl;
+	}
+}
