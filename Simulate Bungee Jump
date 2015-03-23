@@ -1,0 +1,124 @@
+using namespace std;
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <ostream>
+#include <iomanip>
+
+class FallingObject
+{
+public:
+	FallingObject(double m, double sa, double bsc, double bul)//constructor setting values for object
+	{
+		mass = m;
+		surfaceArea = sa;
+		bungeeSpringConstant = bsc;
+		bungeeUnstretchedLength = bul;
+		acceleration = 0;
+		distance = 0;
+		velocity = 0;
+	}
+	//set this function calculates data at each time step
+	void simulateTimeStep(double deltaT)
+	{
+		double Fweight = mass*9.81;
+		double Ffriction = -0.65*surfaceArea*velocity*abs(velocity);
+		double Fspring = -bungeeSpringConstant*(distance-bungeeUnstretchedLength);
+		double Ftotal;
+	   if (distance < bungeeUnstretchedLength)//bungee cord will remain slack until jumper has fallen farther than the unstretched length
+		{
+			Ftotal = Fweight + Ffriction;
+		}
+		else
+		{
+			Ftotal = Fweight + Ffriction + Fspring;
+		}
+		//calculating new acceleration, velocity and distance
+		acceleration = Ftotal / mass;
+		velocity += acceleration*deltaT;
+		distance += velocity*deltaT;
+	}
+	//get functions to return data member values
+	double getMass()
+	{
+		return mass;
+	}
+	double getSurfaceArea()
+	{
+		return surfaceArea;
+	}
+	double getBungeeSpringConstant()
+	{
+		return bungeeSpringConstant;
+	}
+	double getBungeeUnstretchedLength()
+	{
+		return bungeeUnstretchedLength;
+	}
+	double getAcceleration()
+	{
+		return acceleration;
+	}
+	double getDistance()
+	{
+		return distance;
+	}
+	double getVelocity()
+	{
+		return velocity;
+	}
+private://data members
+	double mass;
+	double surfaceArea;
+	double bungeeSpringConstant;
+	double bungeeUnstretchedLength;
+	double acceleration;
+	double distance;
+	double velocity;
+};
+
+void simulateBungeeJump() {
+	// arguments in order:
+	// mass (70kg)
+	// surface area (0.2m^2)
+	// spring constant for the bungee cord (21.7)
+	// unstretched length of bungee cord (30m)
+	FallingObject fallingObject(70.0, 0.2, 21.7, 30.0);//creating an object representing julie ann
+
+	//vectors to hold simulation data
+	vector<double> elapsedTimes;
+	vector<double> distances;
+	vector<double> velocities;
+	vector<double> accelerations;
+
+	// adding the initial values to the vectors 
+	elapsedTimes.push_back(0.0);
+	distances.push_back(fallingObject.getDistance());
+	velocities.push_back(fallingObject.getVelocity());
+	accelerations.push_back(fallingObject.getAcceleration());
+
+	double simulationTime = 60; // 60 seconds
+	double deltaT = 0.01;       // 0.01 seconds
+	unsigned int timeSteps = (unsigned int)(simulationTime / deltaT);//getting number of iterations
+
+	//adds the data for each timestep to vectors
+	for (unsigned int t = 1; t < timeSteps; t++) {
+		fallingObject.simulateTimeStep(deltaT);//updates data for this timestep
+		elapsedTimes.push_back(t * deltaT);
+		distances.push_back(fallingObject.getDistance());
+		velocities.push_back(fallingObject.getVelocity());
+		accelerations.push_back(fallingObject.getAcceleration());
+	}
+	// save the data to the disk
+	ofstream out;
+	out.open("simulate_bungee_jump_data.txt");
+	out << "Time Elapsed" << setw(16) << "Distance" << setw(20) << "Velocity" << setw(25) << "Acceleration\n" << endl;
+	for (unsigned int i = 0; i < elapsedTimes.size(); i++)
+	{
+		out << setprecision(2)<< fixed << elapsedTimes[i] << setw(25) << setprecision(7) << distances[i] << setw(20) << setprecision(7) << velocities[i] << setw(20) << setprecision(7) << accelerations[i]<< "\n" << endl;
+	}	
+}
+int main()
+{
+	simulateBungeeJump();//calling the simulation function
+}
