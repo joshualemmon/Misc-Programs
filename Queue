@@ -1,0 +1,191 @@
+#include <iostream>
+#include <cstdlib>
+
+using namespace std;
+
+//create a node struct
+struct Node
+{
+  int data;
+  Node *next;
+  Node *previous;
+};
+
+class Queue
+{
+public:
+  Queue();
+  ~Queue();
+  bool isEmpty();
+  void printQueue(bool forward);
+  void addNode(int data);
+  int removeNode();
+  int getQueueSize()
+  {
+    return queueSize;
+  }
+  int getCurrent()
+  {
+    return current->data;
+  }
+private:
+  Node *front;
+  Node *current;
+  Node *back;
+  int queueSize;
+};
+
+Queue::Queue()
+{
+  //initialize queue as empty
+  front = NULL;
+  current = NULL;
+  back = NULL;
+  queueSize = 0;
+}
+
+Queue::~Queue()
+{
+  //deletes all nodes in list
+  while(!isEmpty())
+  {
+    removeNode();
+  }
+}
+
+bool Queue::isEmpty()
+{
+  //checks if list is empty
+  return (front == NULL);
+}
+
+void Queue::printQueue(bool forward)
+{
+  //printing in forward direction
+  if (forward)
+  {
+    if(!isEmpty())
+    {
+      //sets the current node equal to the front node
+      current=front;
+      //iterates through nodes
+      for(int i=0; i < queueSize;i++)
+      {
+        //outputs current node data
+        cout << current->data << endl;
+        //moving to next node in linked list
+        current=current->next;
+      }
+    }
+  }
+  //printing in reverse direction
+  else
+  {
+    if(!isEmpty())
+    {
+      //setting the current node to the back node
+      current = back;
+      //iterates through nodes
+      for(int i=0; i < queueSize;i++)
+      {
+        //outputs the current node data
+        cout << current->data << endl;
+        //moving to the previous node in the linked list
+        current=current->previous;
+      }
+    }
+  }
+  //resetting current node to back node in case more nodes will be added
+  current = back;
+}
+void Queue::addNode(int d)
+{
+  //adds first node to queue
+  if(isEmpty())
+  {
+    Node *temp = new Node;
+    temp->data=d;
+    temp->next = NULL;
+    temp->previous = NULL;
+    //only one node so front node, current node and back node all same
+    front = temp;
+    current = temp;
+    back = temp;
+    queueSize++;
+  }
+  //if only one node
+  else if(!isEmpty() && queueSize==1)
+  {
+    Node *temp = new Node;
+    temp->data=d;
+    temp->next=NULL;
+    temp->previous = front;
+    //next node that front points to must be manually changed
+    current = temp;
+    back = temp;
+    front->next=current;
+    queueSize++;
+  }
+  else
+  {
+    //setting current node to back node in order to add new node
+    current=back;
+    //creating temp node
+    Node *temp = new Node;
+    temp->data=d;
+    temp->next=NULL;
+    temp->previous = current;
+    //setting the previous node's new next node address equal to the added node
+    current->next=temp;
+    current = temp;
+    back = temp;
+    queueSize++;
+  }
+}
+int Queue::removeNode()
+{
+  if(!isEmpty())
+  {
+    int temp = front->data;
+    Node *oldfront;
+    oldfront=front;
+    current=front->next;
+    //moving second node to front
+    front = current;
+    //deleting old front node
+    delete oldfront;
+    queueSize--;
+    return temp;
+  }
+  else
+  {
+    //cant remove from empty queue
+    cout << "you can't remove a node from an empty queue!" << endl;
+    exit(1);
+  }
+}
+
+int main()
+{
+  //testing program
+  Queue *test = new Queue();
+  cout << "Queing 1,2,3." << endl;
+  test->addNode(1);
+  test->addNode(2);
+  test->addNode(3);
+  cout << "Printing queue in forward direction." << endl;
+  test->printQueue(true);
+  cout << "Queing 4." << endl;
+  test->addNode(4);
+  cout << test->getQueueSize() << endl;
+  cout << "Printing queue in reverse direction." << endl;
+  test->printQueue(false);
+  cout << "Removing a node." << endl;
+  cout << test->removeNode() << endl;
+  cout << "Queing 5."<< endl;
+  test->addNode(5);
+  cout << "Printing new queue." << endl;
+  test->printQueue(true);
+  delete test;
+ return 0;
+}
