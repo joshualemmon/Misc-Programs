@@ -1,0 +1,80 @@
+using namespace std;
+#include <iostream>
+#include <string>
+#include <stack>
+
+bool isInteger(char c)//checks if character is an integer or a non-integer character
+{
+		if ((c < '0') || (c > '9'))//if the character is not between 0-9 returns false
+		{
+			return false;
+		}
+	return true;//if the character is an integer returns true
+}
+
+int digitValue(char c)//returns an integer value depending on the inputted character
+{
+	return (c-48);
+}
+
+int calculate(string str)//this function will calculate the final value of a RPN expression
+{
+	stack<int> stack1;//creating a stack
+	int value;//declaring integer variables to use as placeholders later
+	int temp1;
+	int temp2;
+	for (unsigned int i = 0; i < str.size(); i++)//loops through inputted string
+	{
+		if (isInteger(str[i]))//if the current character is an integer
+		{
+			value = digitValue(str[i]);//gets the integer value of the character
+			stack1.push(value);//puts integer value on to top of the stack
+		}
+		else if (!(isInteger(str[i])) && str[i] != ' ')//if the current character is not an integer and is not a blank space
+		{
+			if (str[i] == '+')//if character is + sign 
+			{
+				temp1 = stack1.top();//takes the top two integer values in the stack and removes them
+				stack1.pop();
+				temp2 = stack1.top();
+				stack1.pop();
+				value = temp2 + temp1;//adds top integer values
+				stack1.push(value);//adds calculated value onto top of stack
+			}
+			else if (str[i] == '-')//if the current character is - sign
+			{
+				temp1 = stack1.top();//removes top 2 integers from stack
+				stack1.pop();
+				temp2 = stack1.top();
+				stack1.pop();
+				value = temp2 - temp1;//subtracts top 2 integers from each other in order they were inputted
+				stack1.push(value);//adds calculated value to stack
+			}
+			else if (str[i] == '*')//if character is * sign
+			{
+				temp1 = stack1.top();//removes top 2 integers from stack
+				stack1.pop();
+				temp2 = stack1.top();
+				stack1.pop();
+				value = temp2 * temp1;//multiplies top 2 integers 
+				stack1.push(value);//adds calculated value to stack
+			}
+			else if (str[i] == '/')//if character is / sign
+			{
+				temp1 = stack1.top();//removes top 2 integers from stack
+				stack1.pop();
+				temp2 = stack1.top();
+				stack1.pop();
+				value = temp2 / temp1;//divides two integers and discards the remainder
+				stack1.push(value);//adds calculated value to stack
+			}
+		}
+	}
+	return stack1.top();//at this point 1 value will remain in the stack
+}
+
+int main()
+{
+	string expression = "8 4 * 7 2 / + 4 1 + -";//declaring RPN expression
+	cout << expression << " equals " << calculate(expression);//outputs calculated value of RPN expression
+}
