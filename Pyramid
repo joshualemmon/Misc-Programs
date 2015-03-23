@@ -1,0 +1,31 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+
+int main()
+{
+	int lines;
+	int stars = 1;
+	cout << "Enter lines" << endl;
+	cin >> lines;
+	while (lines > 0)
+	{
+		for (int i = 0; i < lines; i++)
+		{
+			cout << " ";
+		}
+		for (int n = 1; n <= stars; n++)
+		{
+			cout << "*";
+		}
+		for (int i = 0; i < lines; i++)
+		{
+			cout << " ";
+		}
+		cout << "\n" << endl;
+		stars += 2;
+		lines--;
+	}
+}
