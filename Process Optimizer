@@ -1,0 +1,156 @@
+//Student: Joshua Lemmon
+//ID: 100555320
+//Date: 31/10/2014
+//Part 2 calculates the number of processes that can be run within a given time frame using the greedy algorithm strategy
+
+#include <vector>
+#include <iostream>
+#include <string>
+#include "time.h"
+using namespace std;
+
+class Process//creating a class to hold various data about a process
+{
+public:
+	Process(int dur, int endTime, string name)//creating a constructor that sets an object's name, duration and required end time
+	{
+		processName = name;
+		duration = dur;
+		requiredEndTime = endTime;
+	}
+	void setProcessName(string name)//set method for object name
+	{
+		processName = name;
+	}
+	void setStartTime(int start)//set method for object start time
+	{
+		startTime = start;
+	}
+	void setDuration(int dur)//set method for object duration
+	{
+		duration = dur;
+	}
+	int getDuration()//get method to return object duration
+	{
+		return duration;
+	}
+	int getStartTime()//get method to return object start time
+	{
+		return startTime;
+	}
+	int getRequiredEndTime()//get method to return object required end time
+	{
+		return requiredEndTime;
+	}
+	string getProcessName()//get method to return object name
+	{
+		return processName;
+	}
+private://private variables for object data
+	int duration;
+	int startTime;
+	int requiredEndTime;
+	string processName;
+};
+
+vector<Process> scheduleProcess(vector<Process> processes)//this function calculates which processes can be run in the given timeframe
+{
+	vector<Process> executedProcesses;//creates a list of Processes to hold all the processes that can be executed within the given timeframe
+	int timePassed = 0;//setting a variable to keep track of the time that has passed before each process is executed
+	for (unsigned int i = 0; i < processes.size(); i++)
+	{
+		processes[i].setStartTime(timePassed);//sets the current object's start time to the amount of time that has passed
+		timePassed += processes[i].getDuration();//increases the amount of time that has passsed by the objects duration
+		if (processes[i].getDuration() <= (processes[i].getRequiredEndTime() - processes[i].getStartTime()))//checks if the current process has enough time to run 
+		{
+			executedProcesses.push_back(processes[i]);//if the duration of the process is smaller than the time left for execution than the process is added to the list of executed processes
+		}
+	}
+	return executedProcesses;//returns all the processes that were executed
+}
+vector<Process> sortByDuration(vector<Process> processes)//sorts the durations of the processes from least to greatest
+{
+	//declaring variables needed for sorting algorithm
+	unsigned int i;
+	unsigned int j;
+	int temp;
+	string strTemp;
+
+	for (i = 1; i < processes.size(); i++)//this algorithm sorts the objects from least to greatest duration, and changes the process name to match as well
+	{
+		j = i;
+		while (j > 0 && processes[j - 1].getDuration() > processes[j].getDuration())//if the duration of the currently iterated object is smaller than the previous object
+		{
+			//storing current object values in temporary variables
+			temp = processes[j].getDuration();
+			strTemp = processes[j].getProcessName();
+			//inserting the previous object into the next element 
+			processes[j].setDuration(processes[j - 1].getDuration());
+			processes[j].setProcessName(processes[j - 1].getProcessName());
+			//setting currently iterated object values into the previous element
+			processes[j - 1].setDuration(temp);
+			processes[j - 1].setProcessName(strTemp);
+			j--;//subtracting 1 from j to account for the sort
+		}
+	}
+	return processes;//returns the sorted objects
+}
+int generateRandom(int max) //generates a random number
+{
+	return rand() % max + 1;//generates a random integer between 1 and the max 
+}
+
+int main()
+{
+	srand(time(NULL));//creates new random numbers each time the prgram is run
+	int endTime = generateRandom(100);//setting the time that processes must execute in
+	vector<Process> processes;//creating a vector of the Process class for testing
+	//creating objects of the Process class
+	Process process1(generateRandom(20), endTime, "Process 1");//setting the data values for object
+	processes.push_back(process1);//adding object to list
+	Process process2(generateRandom(20), endTime, "Process 2");//setting the data values for object
+	processes.push_back(process2);//adding object to list
+	Process process3(generateRandom(20), endTime, "Process 3");//setting the data values for object
+	processes.push_back(process3);//adding object to list
+	Process process4(generateRandom(20), endTime, "Process 4");//setting the data values for object
+	processes.push_back(process4);//adding object to list
+	Process process5(generateRandom(20), endTime, "Process 5");//setting the data values for object
+	processes.push_back(process5);//adding object to list
+	Process process6(generateRandom(20), endTime, "Process 6");//setting the data values for object
+	processes.push_back(process6);//adding object to list
+	Process process7(generateRandom(20), endTime, "Process 7");//setting the data values for object
+	processes.push_back(process7);//adding object to list
+	Process process8(generateRandom(20), endTime, "Process 8");//setting the data values for object
+	processes.push_back(process8);//adding object to list
+	Process process9(generateRandom(20), endTime, "Process 9");//setting the data values for object
+	processes.push_back(process9);//adding object to list
+	Process process10(generateRandom(20), endTime, "Process 10");//setting the data values for object
+	processes.push_back(process10);//adding object to list
+
+	cout << "Total time for execution: " << endTime << " seconds.\n" << endl;
+	//outputting the unsorted objects
+	cout << "Unsorted Processes Information: \n" << endl;
+	for (unsigned int i = 0; i < processes.size(); i++)
+	{
+		cout << processes[i].getProcessName() << ".\n\tDuration: " << processes[i].getDuration() << " second(s)." << endl;
+	}
+
+	vector<Process> sortedProcesses = sortByDuration(processes);//gets the returned sorted vector
+	vector<Process> executedProcesses = scheduleProcess(sortedProcesses);//gets the returned vector of executed processes
+
+	if (executedProcesses.size()>0)
+	{
+		cout << "\nProcesses that will be executed: \n" << endl;//outputting the data about the executed processes
+		for (unsigned int i = 0; i < executedProcesses.size(); i++)
+		{
+			cout << executedProcesses[i].getProcessName() << ":\n\tDuration: " << executedProcesses[i].getDuration() << " seconds. Start time: " << executedProcesses[i].getStartTime() << " seconds." << endl;
+		}
+		//outputting more information about the processes
+		cout << "\nTotal time taken to execute: " << (executedProcesses[executedProcesses.size() - 1].getStartTime() + executedProcesses[executedProcesses.size() - 1].getDuration()) << " seconds.\n" << endl;
+		cout << "Number of processes executed: " << executedProcesses.size() << endl;
+	}
+	else
+	{
+		cout << "\nNo processes can be run in given time frame." << endl;
+	}
+}
