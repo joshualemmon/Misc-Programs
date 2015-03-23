@@ -1,0 +1,217 @@
+// Assignment 1
+// Joshua Lemmon 100555320	
+// October 1, 2014
+// Assignment 1 Applications
+
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <vector>
+#include <set>
+
+using namespace std;
+
+set<int> intersection()
+{
+	int input;
+	int length;
+	set<int> intersections;//creates a set that will hold all the intersections
+
+	vector<int> set1;//creates a vector for the first set of integers
+	vector<int> set2;//creates a vector for the second set of integers
+	//since vectors wont be sorted they essentially act as sets
+
+	cout << "Enter amount of elements in set 1: ";//getting number of elements in first set
+	cin >> length;
+	cout << endl;
+
+	cout << "Enter values of set 1: " << endl;//prompt for elements of first set
+	for (int i = 0; i < length; i++)
+	{
+		cin >> input;
+		set1.push_back(input);//adds element to the vector
+	}
+
+	cout << "Enter amount of elements in set 2: ";//getting number of elements in second set
+	cin >> length;
+	cout << endl;
+
+	cout << "Enter values of set 2: " << endl;//prompt for elements of second set
+	for (int i = 0; i < length; i++)
+	{
+		cin >> input;
+		set2.push_back(input);//adds element to vecctor
+	}
+
+	for (unsigned int i = 0; i < set1.size(); i++)//this will loop through every element of the second set for each element of the first
+	{
+		for (unsigned int n = 0; n < set2.size(); n++)//checks if the elements intersect
+		{
+			if (set1[i] == set2[n])
+			{
+				intersections.insert(set1[i]);//adds the element to the intersection set if the elements have the same value
+			}
+		}
+	}
+
+	return intersections;//returns the intersections to the main function
+}
+float gregoryLeibniz(int numIterations)
+{
+	float piEstimate=0;//setting variable to hold the estimated value of pi
+	for (int i = 0; i < numIterations; i++)//loops through the sum until the number of iterations have been reached
+	{
+		piEstimate = piEstimate + (4 * pow(-1, i) / (2 * i + 1));//sums the estimate each loop
+	}
+	return piEstimate;//returns the estimated value to the main function
+}
+vector<char> reverseComplement()
+{
+	string strInput;
+	cout << "Enter the input sequence, use only 'A', 'C', 'G' or 'T'. " << endl;//prompt for the input sequence
+	cin >> strInput;
+	
+	vector<char> inputSequence(strInput.begin(), strInput.end());//converting the input string to a char vector
+
+	for (unsigned int  i = 0; i < inputSequence.size(); i++)//changes each value to its complementary base pair
+	{
+		if (inputSequence[i] == 'A')
+		{
+			inputSequence[i] = 'T';
+		}
+		else if (inputSequence[i] == 'T')
+		{
+			inputSequence[i] = 'A';
+		}
+		else if (inputSequence[i] == 'G')
+		{
+			inputSequence[i] = 'C';
+		}
+		else if (inputSequence[i] == 'C')
+		{
+			inputSequence[i] = 'G';
+		}
+		else//if user enters invalid input an error message will show and the applictaion will restart
+		{
+			string error = "Invalid input.";
+			vector<char> vError(error.begin(), error.end());
+			return vError;
+		}
+	}
+
+	unsigned int size = inputSequence.size();//creating a variable so i won't have to keep retyping the size
+	cout << "Complementary base pairs:"; 
+	for (unsigned int i = 0; i < size; i++)//outputs the complementary base pairs for the inputted sequence
+	{
+		cout << inputSequence[i];
+	}
+	cout << endl;
+	vector<char> reverseSequence(size);//creating a  vector that will hold the reversed complementary pairs
+
+	for (unsigned int i = 0; i < size; i++)//reverses the CBPs
+	{
+			reverseSequence[i] = inputSequence[size - i - 1];//copies the last value in the input vector to the first value of the reversed vector, then moves inwards. -1 is to keep vector in bound
+	}
+
+	return reverseSequence;//returns the reversed complementary sequence to the main method
+}
+float simulateProjectile(float initialVelocity, float deltaT)//function that will calculate the peak height and time of impact of a projectile
+{
+	//declaring variables
+	float gravity = 9.8f;
+	float height = 0.0f;
+	float peakHeight = 0.0f;
+	float timeImpact;
+	float finalVelocity = 0.0f;
+	int timeCount = 0; // counts amount of time steps
+
+	while (finalVelocity >= 0)
+	{
+		finalVelocity = initialVelocity - gravity*deltaT; // calulating final velocity after time period
+		height = (initialVelocity*deltaT) - (0.5*gravity*pow(deltaT, 2));// calculating height after time period
+		initialVelocity = finalVelocity; // setting Vf of a time period as Vi of the next time period
+		peakHeight += height; // sums the height 
+		timeCount++; // increases counter of time steps
+	}
+
+	float extraTime = sqrt(2 * height / -gravity); //calculates the difference between the time at the apex and the timestep past the apex
+	float tempHeight = (0.5*gravity*pow(extraTime, 2));//calculates how far the projectile falls if the time step goes past the apex
+	peakHeight = peakHeight + tempHeight; // calculates the peak height 
+	cout << fixed << "Peak height : " << setprecision(2) << peakHeight << " meters." << endl; //outputs peak height
+
+	float tempTime = deltaT*timeCount - extraTime; // calculates total time to reach apex
+	timeCount = 0;// resets counter to 0
+	height = peakHeight;//resets height to apex height for next calculation
+
+	deltaT = sqrt(2 * height / gravity);//calculates the time for projectile to reach ground from peak height
+
+	timeImpact = tempTime + deltaT; //adds the time from ground to apex and the time from apex to ground
+
+	return timeImpact;//returns the time of impact to the main function
+}
+int main()
+{
+	bool cont = true;
+	while (cont == true)
+	{
+		//prompts for application selection
+		cout << "Enter 1 for the Projectile Simulation application" << endl;
+		cout << "Enter 2 for the Nucleotide Sequence application" << endl;
+		cout << "Enter 3 for the Gregory-Leibniz Series function" << endl;
+		cout << "Enter 4 for the Intersection function" << endl;
+		cout << "Enter anything else to exit." << endl;
+		int input = 0;
+		cin >> input;// variable to hold value of input
+
+		//Part 1 - Projectile Simulation
+		if (input == 1)
+		{
+			// declaring variables
+			float initialVelocity;
+			float deltaT;
+			float peakHeight;
+			float timeImpact;
+
+			cout << "Enter initial velocity in m/s: ";//prompt for initial velocity input
+			cin >> initialVelocity;
+
+			cout << "Enter a small time difference is seconds:";//prompt for delta t input
+			cin >> deltaT;
+
+			cout << "Time of impact with ground: " << fixed << setprecision(2) << simulateProjectile(initialVelocity, deltaT) << " seconds.\n" << endl;//outputs time of impact
+		}
+		//Parte 2 - Nucleotide Sequencing
+		else if (input == 2)
+		{
+			vector<char> output = reverseComplement();//gets the returned value from the method
+			cout << "Reversed complementary base pairs: ";
+			for (unsigned int i = 0; i < output.size(); i++)//outputs the returned vector
+			{
+				cout << output[i];
+			}
+			cout << "\n" << endl;
+		}
+		else if (input == 3)
+		{
+			int numIterations;
+			cout << "Enter number of iterations: ";//prompt for number of iterations, ~230000 needed for accuracy to 6 decimal places
+			cin >> numIterations;
+			cout << endl;
+			cout << "Pi is estimated to be: " << fixed << setprecision(6) << gregoryLeibniz(numIterations) << "\n" << endl; //calls the estimated function and outputs the estimate to 6 decimal points
+		}
+		else if (input == 4)
+		{
+			set<int> intersections = intersection();//creates a set that has the same values as the intersections
+			ostream_iterator<int> output(cout, " ");//this will put a space between each element during output
+			cout << "Intersections are: ";
+			copy(intersections.begin(), intersections.end(), output);//outputs all the intersections
+			cout << "\n" << endl;
+		}
+		else
+		{
+			exit(0);//exits program if user doesn't enter 1/2/3/4
+		}
+	}
+	return 0;
+}
+
